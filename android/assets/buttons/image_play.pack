@@ -1,0 +1,19 @@
+image_play.png
+size: 556,130
+format: RGBA8888
+repeat: none
+button-up
+  rotate: false
+  xy: 1, 0
+  size: 276, 130
+  orig: 276, 130
+  offset: 0, 0
+  index: -1
+button-down
+  rotate: false
+  xy: 279, 0
+  size: 276, 130
+  orig: 276, 130
+  offset: 0, 0
+  index: -1
+
