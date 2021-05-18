@@ -30,17 +30,12 @@ public class Letter extends Actor {
     Texture imgABC[] = new Texture[33];
     Sound[] sndABC = new Sound[33];
 
-    Rectangle circle;
-
     public float dx, dy, mx, my;
 
     public boolean alive = false;
     //перестроить летер  на циркл
 
     public Letter(){
-        circle = new Rectangle();
-
-
         dx = MathUtils.random(1,2);
         marker = false;
         stop = false;
@@ -56,7 +51,7 @@ public class Letter extends Actor {
         return alive;
     }
     boolean isIncrease() {return increase;}
-    public boolean isTouchable() { return touchabl;}
+    public boolean isTouchabl() { return touchabl;}
     public boolean isSnd(){ return snd; }
     public boolean isMarker(){return marker;}
     public boolean isStop(){return  stop;}
@@ -77,8 +72,6 @@ public class Letter extends Actor {
     public void setPosition(float x, float y){
         this.x = x;
         this.y = y;
-        circle.x=x;
-        circle.y=y;
     }
     void setSnd(boolean snd){
         this.snd = snd;
@@ -88,8 +81,6 @@ public class Letter extends Actor {
         height_SRC = height;
         this.width = width * const_width;
         this.height = height * const_height;
-        circle.height=this.height;
-        circle.width=this.width;
     }
     public void setActor(float width, float height){
         this.width = width;
@@ -101,8 +92,6 @@ public class Letter extends Actor {
         super.act(delta);
         x += dx;
         y += dy;
-        circle.x=x;
-        circle.y=y;
 
         if (screen == game){
             if (x> width_SRC-width|| x<0)dx=-dx;
@@ -114,8 +103,9 @@ public class Letter extends Actor {
     }
     public Actor hit(float x, float y, boolean touchable){
         super.hit(x,y,this.touchabl);
-        if (x > this.x && x < this.x + width && y > this.y && y < this.y + height){
+        if (x > this.x && x < this.x + width && y > this.y && y < this.y + height && isTouchabl()){
             setAlive(false);
+
 
 
         }
@@ -146,7 +136,6 @@ public class Letter extends Actor {
 
     }
     public void draw (Batch batch, float parentAlpha){
-
         super.draw(batch, parentAlpha);
         if ((isAlive() && isIncrease() && isTouchable()) || isMarker()) batch.draw(imgABC[type], x, y, width, height);
 

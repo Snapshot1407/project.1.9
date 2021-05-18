@@ -196,6 +196,7 @@ public class GameScreen extends BaseScreen {
                 letter1.setStringScreen("Game");
                 letter1.setSize(game.width, game.height);
                 letter1.setAlive(true);
+                letter1.setTouchabl(true);
 
                 n_menu = 0;
 
@@ -208,14 +209,7 @@ public class GameScreen extends BaseScreen {
 
             if (arrayLetter.isEmpty()) {
                 int n = 0;
-                for (int i =letter.size-1; i > 0; i--) {
-                    if (letter.size>1){
-
-                        Rectangle circle = letter.get(i).circle;
-                        Rectangle circle1 = letter.get(i-1).circle;
-                        if (circle.overlaps(circle1)) System.out.println("overlaps");
-                        if (circle.contains(circle1)) System.out.println("contains");
-                    }
+                for (int i =0; i < letter.size; i++) {
                     if (!letter.get(i).isAlive()) n++;
                     if (n == letter.size) {
 

@@ -66,6 +66,7 @@ public class QuestScreen extends BaseScreen {
     long timeMenu;
     byte n_menu = 0;
     boolean menu=false;
+    boolean fds=true;
 
     //переменная для количества букв в слове
 
@@ -345,31 +346,21 @@ public class QuestScreen extends BaseScreen {
         if (timeGame - timetouch >= timeExit){
 
             for (int i = 0; i < letter.size; i++) {
-
                 if (letter.get(i).isStop())letter.get(i).resume();
                 else if (letter.get(i).isMarker()){
 
                     letter.get(i).remove();
                     letter.removeIndex(i);
+                    fds=true;
 
                 }
             }}
 
 
         if (letter.notEmpty()){
-            for (int i = letter.size-1; i > 0; i--){
-                if (letter.size>1){
-                    for (Letter actor:letter) {
-                        Rectangle circle = actor.circle;
-                        for (Letter letter:letter) {
-                            Rectangle circle1 = letter.circle;
-                            if (circle.overlaps(circle1)) System.out.println("overlaps");
-                        }
-                    }
-
-                }
-                if (!letter.get(i).isAlive() && !letter.get(i).isStop()){
-
+            for (int i =0; i < letter.size; i++){
+                if (!letter.get(i).isAlive() && !letter.get(i).isStop()&&letter.get(i).isTouchabl()){
+                    if (fds){
 
                     letter.get(i).setActor(game.height*const_Height_P,game.height*const_Height_P);
                     letter.get(i).setPosition((game.width * const_Width_S)+((game.width* const_Width_P)/2)-(letter.get(i).width/2),
@@ -377,7 +368,7 @@ public class QuestScreen extends BaseScreen {
 
                     n_increase = 1;
 
-                    letter.get(i).setMarker(true);
+                        letter.get(i).setMarker(true);
 
                     timetouch = TimeUtils.millis();
                     for (Letter actor:letter) {
@@ -386,7 +377,11 @@ public class QuestScreen extends BaseScreen {
                             System.out.println("dfh");
                         }
                     }
-            }}}
+                    fds=false;
+                    }
+                }
+            }
+        }
 
 
 
