@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.Iterator;
 
 public class QuestScreen extends BaseScreen {
 
@@ -57,9 +61,11 @@ public class QuestScreen extends BaseScreen {
     //переменные для таймера спавна
     long timeGame= TimeUtils.millis(),timeSpawn=3000,timeLastSpawn=TimeUtils.millis()-4000;
     long timeIncrease = 5000;
-    long timeDelete = 10000;
+
     long timeExit = 2000;
-    long timeMarkerExit;
+    long timeMenu;
+    byte n_menu = 0;
+    boolean menu=false;
 
     //переменная для количества букв в слове
 
@@ -161,6 +167,7 @@ public class QuestScreen extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 pause();
+                menu = true;
                 game.menuPauseScreen.setScreen("Quest");
                 game.setScreen(game.menuPauseScreen);
             }
@@ -315,7 +322,7 @@ public class QuestScreen extends BaseScreen {
 
 
 
-        if (0 < arrayLetter.size && (timeGame - timeLastSpawn - (timeIncrease * n_increase)>timeSpawn)){
+        if (!menu && 0 < arrayLetter.size && (timeGame - timeLastSpawn - (timeIncrease * n_increase)>timeSpawn+(timeMenu*n_menu))){
             int num = MathUtils.random(0,arrayLetter.size-1);
 
             Letter letter1 = new Letter();
@@ -350,7 +357,17 @@ public class QuestScreen extends BaseScreen {
 
 
         if (letter.notEmpty()){
-            for (int i = 0; i < letter.size; i++){
+            for (int i = letter.size-1; i > 0; i--){
+                if (letter.size>1){
+                    for (Letter actor:letter) {
+                        Rectangle circle = actor.circle;
+                        for (Letter letter:letter) {
+                            Rectangle circle1 = letter.circle;
+                            if (circle.overlaps(circle1)) System.out.println("overlaps");
+                        }
+                    }
+
+                }
                 if (!letter.get(i).isAlive() && !letter.get(i).isStop()){
 
 

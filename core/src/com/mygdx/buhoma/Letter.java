@@ -5,7 +5,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
 
 public class Letter extends Actor {
     public int type;
@@ -28,6 +30,7 @@ public class Letter extends Actor {
     Texture imgABC[] = new Texture[33];
     Sound[] sndABC = new Sound[33];
 
+    Rectangle circle;
 
     public float dx, dy, mx, my;
 
@@ -35,6 +38,8 @@ public class Letter extends Actor {
     //перестроить летер  на циркл
 
     public Letter(){
+        circle = new Rectangle();
+
 
         dx = MathUtils.random(1,2);
         marker = false;
@@ -72,6 +77,8 @@ public class Letter extends Actor {
     public void setPosition(float x, float y){
         this.x = x;
         this.y = y;
+        circle.x=x;
+        circle.y=y;
     }
     void setSnd(boolean snd){
         this.snd = snd;
@@ -81,6 +88,8 @@ public class Letter extends Actor {
         height_SRC = height;
         this.width = width * const_width;
         this.height = height * const_height;
+        circle.height=this.height;
+        circle.width=this.width;
     }
     public void setActor(float width, float height){
         this.width = width;
@@ -92,6 +101,9 @@ public class Letter extends Actor {
         super.act(delta);
         x += dx;
         y += dy;
+        circle.x=x;
+        circle.y=y;
+
         if (screen == game){
             if (x> width_SRC-width|| x<0)dx=-dx;
             if (y>height_SRC-height ||y<100)dy=-dy;}
@@ -111,15 +123,16 @@ public class Letter extends Actor {
         return null;
     }
     void stop(){
-        mx = dx;
-        my = dy;
-        dx = dy = 0;
-        setAlive(false);
-        setIncrease(false);
-        setTouchabl(false);
-        setSnd(false);
-        setStop(true);
-
+        if (!isStop()) {
+            mx = dx;
+            my = dy;
+            dx = dy = 0;
+            setAlive(false);
+            setIncrease(false);
+            setTouchabl(false);
+            setSnd(false);
+            setStop(true);
+        }
 
     }
     void resume(){

@@ -1,15 +1,12 @@
 package com.mygdx.buhoma;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -47,6 +44,9 @@ public class GameScreen extends BaseScreen {
     int [][][] twoDimArray = {{{5,7,3,17}, {7,0,1,12}, {8,1,2,3}},{{5,7,3,17}, {7,0,1,12}, {8,1,2,3}},{{5,7,3,17}, {7,0,1,12}, {8,1,2,3}},{{5,7,3,17}, {7,0,1,12}, {8,1,2,3}}};//1-обозначет тематику,2-слово,3-буквы
     //переменные для таймера спавна
     long timeGame= TimeUtils.millis(),timeSpawn=3000,timeLastSpawn=TimeUtils.millis()-4000;
+    long timeMenu;
+    byte n_menu = 0;
+    boolean menu=false;
     //переменная для количества букв в слове
     public int count_m;// переменная для выбора случайного слова
     //массив буквы рандомной
@@ -157,7 +157,7 @@ public class GameScreen extends BaseScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 pause();
 
-
+                menu=true;
                 game.menuPauseScreen.setScreen("Game");
                 game.setScreen(game.menuPauseScreen);
             }
@@ -185,53 +185,60 @@ public class GameScreen extends BaseScreen {
         timeGame = TimeUtils.millis();
 
         //создание буквы по таймеру игровому (реализация через список слова ,вылет букв слова в рандомном порядке)
-        if (arrayLetter.notEmpty() && (timeGame - timeLastSpawn > timeSpawn)){
-            int num = MathUtils.random(0,arrayLetter.size-1);
 
-            Letter letter1 = new Letter();
+        if (!menu && arrayLetter.notEmpty() && (timeGame - timeLastSpawn > timeSpawn+(timeMenu*n_menu))) {
+                int num = MathUtils.random(0, arrayLetter.size - 1);
 
-            letter1.setPosition(400,400);
-            letter1.setType(arrayLetter.get(num));
-            letter1.setStringScreen("Game");
-            letter1.setSize(game.width,game.height);
-            letter1.setAlive(true);
+                Letter letter1 = new Letter();
 
-            letter.add(letter1);
-            stage.addActor(letter1);
-            arrayLetter.removeIndex(num);
-            timeLastSpawn=TimeUtils.millis();
+                letter1.setPosition(400, 400);
+                letter1.setType(arrayLetter.get(num));
+                letter1.setStringScreen("Game");
+                letter1.setSize(game.width, game.height);
+                letter1.setAlive(true);
 
+                n_menu = 0;
 
+                letter.add(letter1);
+                stage.addActor(letter1);
+                arrayLetter.removeIndex(num);
+                timeLastSpawn = TimeUtils.millis();
         }
 
 
-        if (arrayLetter.isEmpty()){
-            int n = 0;
-            for (int i = 0; i < letter.size; i++) {
-                if (!letter.get(i).isAlive()) n++;
-                if ( n == letter.size ) {
+            if (arrayLetter.isEmpty()) {
+                int n = 0;
+                for (int i =letter.size-1; i > 0; i--) {
+                    if (letter.size>1){
 
-            game.questScreen.massive(k[count_m]);
-            game.questScreen.cntWord(count_m);
-                    game.menuPauseScreen.exit = true;
-            game.setScreen(game.questScreen);
-            dispose();
+                        Rectangle circle = letter.get(i).circle;
+                        Rectangle circle1 = letter.get(i-1).circle;
+                        if (circle.overlaps(circle1)) System.out.println("overlaps");
+                        if (circle.contains(circle1)) System.out.println("contains");
+                    }
+                    if (!letter.get(i).isAlive()) n++;
+                    if (n == letter.size) {
+
+                        game.questScreen.massive(k[count_m]);
+                        game.questScreen.cntWord(count_m);
+                        game.menuPauseScreen.exit = true;
+                        game.setScreen(game.questScreen);
+                        dispose();
 
 
+                        //if (count_m )
+                        //создает массив нужного размера для слова(которое рандомом выбрали)
+                        //загружаем буквы в список слова
 
-            //if (count_m )
-            //создает массив нужного размера для слова(которое рандомом выбрали)
-            //загружаем буквы в список слова
-
-        }
+                    }
+                }
             }
-        }
 
-        camera.update();
+            camera.update();
 
-        //отрисовка изображений
-        stage.act(delta);
-        stage.draw();
+            //отрисовка изображений
+            stage.act(delta);
+            stage.draw();
 
 
     }
@@ -240,10 +247,10 @@ public class GameScreen extends BaseScreen {
     @Override
     public void pause() {
         for (Letter actor:letter
-             ) {
+        ) {
             actor.stop();
         }
-    timeGame = 0;
+        timeGame = 0;
 
     }
 
