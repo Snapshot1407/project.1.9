@@ -105,6 +105,9 @@ public class Letter extends Actor {
         super.hit(x,y,this.touchabl);
         if (x > this.x && x < this.x + width && y > this.y && y < this.y + height && isTouchabl()){
             setAlive(false);
+            if (screen==game){
+                playSnd();
+            }
 
 
 

@@ -66,7 +66,7 @@ public class QuestScreen extends BaseScreen {
     long timeMenu;
     byte n_menu = 0;
     boolean menu=false;
-    boolean fds=true;
+    boolean fds=true;//для сортировки (проверки на маркер)
 
     //переменная для количества букв в слове
 
@@ -352,7 +352,6 @@ public class QuestScreen extends BaseScreen {
                     letter.get(i).remove();
                     letter.removeIndex(i);
                     fds=true;
-
                 }
             }}
 
